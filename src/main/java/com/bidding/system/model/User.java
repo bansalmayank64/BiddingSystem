@@ -1,11 +1,10 @@
 package com.bidding.system.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 @Entity
 public class User implements Serializable {
@@ -13,35 +12,34 @@ public class User implements Serializable {
 	private static final long serialVersionUID = -7701472919551240347L;
 
 	@Id
-	private String id;
+	@Column(length = 15)
+	private String userId;
 
+	@Column(length = 50)
 	private String email;
-
+	@Column(length = 50)
 	private String firstName;
-
+	@Column(length = 50)
 	private String lastName;
-
-	private Date joiningDate;
 
 	public User() {
 		super();
 	}
 
-	public User(String id, String email, String firstName, String lastName, Date joiningDate) {
+	public User(String userId, String email, String firstName, String lastName) {
 		super();
-		this.id = id;
+		this.userId = userId;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.joiningDate = joiningDate;
 	}
 
-	public String getId() {
-		return id;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getEmail() {
@@ -68,25 +66,17 @@ public class User implements Serializable {
 		this.lastName = lastName;
 	}
 
-	public Date getJoiningDate() {
-		return joiningDate;
-	}
-
-	public void setJoiningDate(Date joiningDate) {
-		this.joiningDate = joiningDate;
-	}
-
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", joiningDate=" + joiningDate + "]";
+		return "User [userId=" + userId + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
+				+ "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
@@ -99,10 +89,10 @@ public class User implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (userId == null) {
+			if (other.userId != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!userId.equals(other.userId))
 			return false;
 		return true;
 	}

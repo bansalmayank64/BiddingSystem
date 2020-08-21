@@ -2,55 +2,71 @@ package com.bidding.system.model;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-
-import org.springframework.data.annotation.Id;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Auction implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 12342342L;
 
 	@Id
-	private String id;
-	// @DBRef
-	private Product product;
+	@GeneratedValue
+	@Column(length = 15)
+	private String auctionId;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "itemCode")
+	private Item item;
+
+	@Column(columnDefinition = "enum('RUNNING','OVER')")
+	@Enumerated(EnumType.STRING)
 	private AuctionStatus auctionStatus;
-	private Double startingAmount;
-	// @DBRef
-	private Set<User> participants;
-	private List<BidInformation> biddings;
+
+	private Double minimumBasePrice;
+	private Double stepRate;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "bidId")
+	private List<UserBid> userBids;
 
 	public Auction() {
 		super();
 	}
 
-	public Auction(String id, Product product, AuctionStatus auctionStatus, Double startingAmount,
-			Set<User> participants, List<BidInformation> biddings) {
-		this.id = id;
-		this.product = product;
+	public Auction(String id, Item item, AuctionStatus auctionStatus, Double minimumBasePrice, Double stepRate,
+			List<UserBid> userBids) {
+		this.auctionId = id;
+		this.item = item;
 		this.auctionStatus = auctionStatus;
-		this.startingAmount = startingAmount;
-		this.participants = participants;
-		this.setBiddings(biddings);
+		this.minimumBasePrice = minimumBasePrice;
+		this.stepRate = stepRate;
+		this.setUserBids(userBids);
 	}
 
-	public String getId() {
-		return id;
+	public String getAuctionId() {
+		return auctionId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setAuctionId(String auctionId) {
+		this.auctionId = auctionId;
 	}
 
-	public Product getProduct() {
-		return product;
+	public Item getItem() {
+		return item;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setItem(Item item) {
+		this.item = item;
 	}
 
 	public AuctionStatus getAuctionStatus() {
@@ -61,34 +77,33 @@ public class Auction implements Serializable {
 		this.auctionStatus = auctionStatus;
 	}
 
-	public Double getStartingAmount() {
-		return startingAmount;
+	public Double getMinimumBasePrice() {
+		return minimumBasePrice;
 	}
 
-	public void setStartingAmount(Double startingAmount) {
-		this.startingAmount = startingAmount;
+	public void setMinimumBasePrice(Double minimumBasePrice) {
+		this.minimumBasePrice = minimumBasePrice;
 	}
 
-	public Set<User> getParticipants() {
-		return participants;
+	public Double getStepRate() {
+		return stepRate;
 	}
 
-	public void setParticipants(Set<User> participants) {
-		this.participants = participants;
+	public void setStepRate(Double stepRate) {
+		this.stepRate = stepRate;
 	}
 
-	public List<BidInformation> getBiddings() {
-		return biddings;
+	public List<UserBid> getUserBids() {
+		return userBids;
 	}
 
-	public void setBiddings(List<BidInformation> biddings) {
-		this.biddings = biddings;
+	public void setUserBids(List<UserBid> userBids) {
+		this.userBids = userBids;
 	}
 
 	@Override
 	public String toString() {
-		return "Auction [id=" + id + ", product=" + product + ", auctionStatus=" + auctionStatus + ", startingAmount="
-				+ startingAmount + ", participants=" + participants + ", biddings=" + biddings + "]";
+		return "Auction [auctionId=" + auctionId + ", item=" + item + ", auctionStatus=" + auctionStatus
+				+ ", minimumBasePrice=" + minimumBasePrice + ", stepRate=" + stepRate + ", userBids=" + userBids + "]";
 	}
-
 }

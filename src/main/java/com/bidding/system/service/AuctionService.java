@@ -1,10 +1,9 @@
 package com.bidding.system.service;
 
-import java.util.List;
-
-import com.bidding.system.model.Auction;
+import com.bidding.system.dto.FetchAuctionsRequestDto;
+import com.bidding.system.dto.FetchAuctionsResponseDto;
 
 public interface AuctionService {
 
-	List<Auction> getAllActive() throws Exception;
+	FetchAuctionsResponseDto fetchAllAuctions(FetchAuctionsRequestDto request);
 }
