@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Version;
 
 @Entity
 public class Auction implements Serializable {
@@ -38,9 +37,6 @@ public class Auction implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "auctionId")
 	private List<UserBid> userBids;
-
-	@Version
-	private Long version;
 
 	public Auction() {
 		super();
@@ -104,21 +100,12 @@ public class Auction implements Serializable {
 		this.userBids = userBids;
 	}
 
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Auction [auctionId=").append(auctionId).append(", item=").append(item)
 				.append(", auctionStatus=").append(auctionStatus).append(", minimumBasePrice=").append(minimumBasePrice)
-				.append(", stepRate=").append(stepRate).append(", userBids=").append(userBids).append(", version=")
-				.append(version).append("]");
+				.append(", stepRate=").append(stepRate).append(", userBids=").append(userBids).append(", version=");
 		return builder.toString();
 	}
 

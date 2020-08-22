@@ -14,8 +14,8 @@ insert into item(item_code ,description , name) values ('BT8972khi123', 'Private
 insert into item(item_code ,description , name) values ('HTK718adg1123', 'Hotel & Resort', 'Malibu Hotel');
 
 
-insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code, version) values('AUC22082020', 'RUNNING', 2500, 100, 'TT123ki98011', 0);
-insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code, version) values('AUC20072020', 'RUNNING', 3500, 200, 'VKh128901111', 0);
-insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code, version) values('AUC22020982', 'OVER', 4500, 300, 'Res781623', 0);
-insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code, version) values('AUC21256780', 'OVER', 5500, 400, 'BT8972khi123', 0);
-insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code, version) values('AUC23452671', 'RUNNING', 6500, 500, 'HTK718adg1123', 0);
+insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code) values('AUC22082020', 'RUNNING', 2500, 100, 'TT123ki98011');
+insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code) values('AUC20072020', 'RUNNING', 3500, 200, 'VKh128901111');
+insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code) values('AUC22020982', 'OVER', 4500, 300, 'Res781623');
+insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code) values('AUC21256780', 'OVER', 5500, 400, 'BT8972khi123');
+insert into auction(auction_id , auction_status,  minimum_base_price , step_rate, item_code) values('AUC23452671', 'RUNNING', 6500, 500, 'HTK718adg1123');

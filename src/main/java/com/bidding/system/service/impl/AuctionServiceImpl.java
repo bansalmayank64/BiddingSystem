@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -73,7 +72,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	@Transactional
-	public void placeBid(String itemCode, AuctionBidRequestDto auctionBidRequestDto, Long version)
+	public void placeBid(String itemCode, AuctionBidRequestDto auctionBidRequestDto)
 			throws AuctionNotFoundException, BidNotAcceptedException {
 		Optional<Item> findItemById = itemRepository.findById(itemCode);
 		if (findItemById.isPresent()) {
@@ -81,7 +80,7 @@ public class AuctionServiceImpl implements AuctionService {
 			Optional<Auction> findAuctionByItem = auctionRepository.findByItemAndAuctionStatus(item,
 					AuctionStatus.RUNNING);
 			if (findAuctionByItem.isPresent()) {
-				validateAndPlaceBid(auctionBidRequestDto.getBidAmount(), findAuctionByItem.get(), version);
+				validateAndPlaceBid(auctionBidRequestDto.getBidAmount(), findAuctionByItem.get());
 			} else {
 				throw new AuctionNotFoundException("No auction is running with item code: " + itemCode);
 			}
@@ -90,16 +89,14 @@ public class AuctionServiceImpl implements AuctionService {
 		}
 	}
 
-	private void validateAndPlaceBid(Double bidAmount, Auction auction, Long version) throws BidNotAcceptedException {
-		List<UserBid> userBids = auction.getUserBids().stream().filter(u -> u.isAccepted())
-				.collect(Collectors.toList());
+	private void validateAndPlaceBid(Double bidAmount, Auction auction) throws BidNotAcceptedException {
+		List<UserBid> userBids = userBidRepository.findAllByAuctionAndIsAccepted(auction, true);
 		if (Objects.isNull(userBids)) {
 			userBids = new ArrayList<>();
 		}
 		Double maxBidding = getMaxBidding(userBids, auction.getMinimumBasePrice());
 		Double stepRate = auction.getStepRate();
 		Double minimumBasePrice = auction.getMinimumBasePrice();
-		auction.setVersion(version);
 		if (bidAmount > maxBidding && bidAmount > minimumBasePrice && (bidAmount - maxBidding) % stepRate == 0) {
 			userBids.add(new UserBid(null, bidAmount, true));
 			auction.setUserBids(userBids);
