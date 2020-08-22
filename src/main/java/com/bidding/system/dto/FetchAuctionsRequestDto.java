@@ -11,7 +11,7 @@ public class FetchAuctionsRequestDto implements Serializable {
 
 	private Integer limit;
 	private Integer startFrom;
-	private AuctionStatus auctionStatus;
+	private AuctionStatus status;
 
 	public Integer getLimit() {
 		return limit;
@@ -29,17 +29,17 @@ public class FetchAuctionsRequestDto implements Serializable {
 		this.startFrom = startFrom;
 	}
 
-	public AuctionStatus getAuctionStatus() {
-		return auctionStatus;
+	public AuctionStatus getStatus() {
+		return status;
 	}
 
-	public void setAuctionStatus(AuctionStatus auctionStatus) {
-		this.auctionStatus = auctionStatus;
+	public void setStatus(AuctionStatus status) {
+		this.status = status;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(auctionStatus, limit, startFrom);
+		return Objects.hash(status, limit, startFrom);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class FetchAuctionsRequestDto implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		FetchAuctionsRequestDto other = (FetchAuctionsRequestDto) obj;
-		return auctionStatus == other.auctionStatus && Objects.equals(limit, other.limit)
+		return status == other.status && Objects.equals(limit, other.limit)
 				&& Objects.equals(startFrom, other.startFrom);
 	}
 
@@ -59,7 +59,7 @@ public class FetchAuctionsRequestDto implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("FetchAuctionsRequestDto [limit=").append(limit).append(", startFrom=").append(startFrom)
-				.append(", auctionStatus=").append(auctionStatus).append("]");
+				.append(", status=").append(status).append("]");
 		return builder.toString();
 	}
 }
