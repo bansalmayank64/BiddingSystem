@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -27,6 +26,7 @@ import com.bidding.system.model.UserBid;
 import com.bidding.system.repository.AuctionRepository;
 import com.bidding.system.repository.AuctionRepositoryAddMultiplePredicateSpecification;
 import com.bidding.system.repository.ItemRepository;
+import com.bidding.system.repository.UserBidRepository;
 import com.bidding.system.service.AuctionService;
 
 @Service
@@ -37,6 +37,9 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Autowired
 	private ItemRepository itemRepository;
+
+	@Autowired
+	private UserBidRepository userBidRepository;
 
 	@Override
 	public FetchAuctionsResponseDto fetchAllAuctions(FetchAuctionsRequestDto request) {
@@ -58,8 +61,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 		List<AuctionModel> auctionModels = new ArrayList<>();
 		auctions.forEach(auction -> {
-			List<UserBid> userBids = auction.getUserBids().stream().filter(u -> u.isAccepted())
-					.collect(Collectors.toList());
+			List<UserBid> userBids = userBidRepository.findAllByAuctionAndIsAccepted(auction, true);
 			AuctionModel auctionModel = new AuctionModel(auction.getAuctionId(), auction.getItem().getItemCode(),
 					getMaxBidding(userBids, auction.getMinimumBasePrice()), auction.getStepRate());
 			auctionModels.add(auctionModel);
@@ -88,8 +90,7 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	private void validateAndPlaceBid(Double bidAmount, Auction auction) throws BidNotAcceptedException {
-		List<UserBid> userBids = auction.getUserBids().stream().filter(u -> u.isAccepted())
-				.collect(Collectors.toList());
+		List<UserBid> userBids = userBidRepository.findAllByAuctionAndIsAccepted(auction, true);
 		if (Objects.isNull(userBids)) {
 			userBids = new ArrayList<>();
 		}
