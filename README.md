@@ -11,6 +11,19 @@ An Auction have following attributes:
 	b. OVER: Once auction is over then no user can place the bid on the corresponding item
 5. User Bids - All user bids should be recorded whether it was accepted or rejected.
 
+## Technology stack used:
+1. Java 8+
+2. Spring boot
+3. Maven
+4. JPA
+5. H2 Db (Used just for portability, Can be replaced with real time db)
+
+## Future Scope
+1. Realtime broadcasting of bid placed on the auction so that all users aware of latest highest bid on the auction -> Can be done using Websockets.
+2. Authentication and authorization
+3. User Onboarding apis
+4. Add/Delete/Modify Auctions/Items apis
+
 ## Usage 
 
 ### Fetch Auctions Api
