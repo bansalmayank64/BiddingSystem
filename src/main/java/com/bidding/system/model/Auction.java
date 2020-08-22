@@ -2,17 +2,18 @@ package com.bidding.system.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 @Entity
 public class Auction implements Serializable {
@@ -20,8 +21,7 @@ public class Auction implements Serializable {
 	private static final long serialVersionUID = 12342342L;
 
 	@Id
-	@GeneratedValue
-	@Column(length = 15)
+	@Column(length = 36)
 	private String auctionId;
 
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -39,13 +39,16 @@ public class Auction implements Serializable {
 	@JoinColumn(name = "auctionId")
 	private List<UserBid> userBids;
 
+	@Version
+	private Long version;
+
 	public Auction() {
 		super();
 	}
 
-	public Auction(String id, Item item, AuctionStatus auctionStatus, Double minimumBasePrice, Double stepRate,
+	public Auction(Item item, AuctionStatus auctionStatus, Double minimumBasePrice, Double stepRate,
 			List<UserBid> userBids) {
-		this.auctionId = id;
+		this.auctionId = UUID.randomUUID().toString();
 		this.item = item;
 		this.auctionStatus = auctionStatus;
 		this.minimumBasePrice = minimumBasePrice;
@@ -101,9 +104,22 @@ public class Auction implements Serializable {
 		this.userBids = userBids;
 	}
 
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
 	@Override
 	public String toString() {
-		return "Auction [auctionId=" + auctionId + ", item=" + item + ", auctionStatus=" + auctionStatus
-				+ ", minimumBasePrice=" + minimumBasePrice + ", stepRate=" + stepRate + ", userBids=" + userBids + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Auction [auctionId=").append(auctionId).append(", item=").append(item)
+				.append(", auctionStatus=").append(auctionStatus).append(", minimumBasePrice=").append(minimumBasePrice)
+				.append(", stepRate=").append(stepRate).append(", userBids=").append(userBids).append(", version=")
+				.append(version).append("]");
+		return builder.toString();
 	}
+
 }

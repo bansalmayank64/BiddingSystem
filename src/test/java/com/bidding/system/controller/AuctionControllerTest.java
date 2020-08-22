@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.bidding.system.dto.FetchAuctionsRequestDto;
@@ -36,10 +37,10 @@ public class AuctionControllerTest {
 		given(auctionService.fetchAllAuctions(request)).willReturn(response);
 
 		// When
-		FetchAuctionsResponseDto fetchAllAuctions = auctionController.fetchAllAuctions(request);
+		ResponseEntity<FetchAuctionsResponseDto> actualResponse = auctionController.fetchAllAuctions(request);
 
 		// Then
-		assertEquals(response, fetchAllAuctions);
+		assertEquals(response, actualResponse.getBody());
 		then(auctionService).should().fetchAllAuctions(request);
 		then(auctionService).shouldHaveNoMoreInteractions();
 	}

@@ -55,7 +55,10 @@ public class Item implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Product [itemCode=" + itemCode + ", name=" + name + ", description=" + description + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Item [itemCode=").append(itemCode).append(", name=").append(name).append(", description=")
+				.append(description).append("]");
+		return builder.toString();
 	}
 
 }

@@ -59,7 +59,7 @@ public class AuctionServiceTest {
 				.willReturn(Arrays.asList(auction));
 
 		FetchAuctionsRequestDto request = new FetchAuctionsRequestDto();
-		request.setAuctionStatus(AuctionStatus.RUNNING);
+		request.setStatus(AuctionStatus.RUNNING);
 
 		// When
 		FetchAuctionsResponseDto fetchAllAuctions = auctionService.fetchAllAuctions(request);
@@ -76,13 +76,13 @@ public class AuctionServiceTest {
 	@Test
 	public void shouldFetchAllAuctionsGivenEmptyUserBids() {
 		// Given
-		Auction auction = new Auction("auctionId", new Item("itemCode", "name", "description"), AuctionStatus.RUNNING,
-				5000d, 100d, Collections.emptyList());
+		Auction auction = new Auction(new Item("itemCode", "name", "description"), AuctionStatus.RUNNING, 5000d, 100d,
+				Collections.emptyList());
 		given(auctionRepository.findAll(any(AuctionRepositoryAddMultiplePredicateSpecification.class)))
 				.willReturn(Arrays.asList(auction));
 
 		FetchAuctionsRequestDto request = new FetchAuctionsRequestDto();
-		request.setAuctionStatus(AuctionStatus.RUNNING);
+		request.setStatus(AuctionStatus.RUNNING);
 
 		// When
 		FetchAuctionsResponseDto fetchAllAuctions = auctionService.fetchAllAuctions(request);
@@ -109,7 +109,7 @@ public class AuctionServiceTest {
 				any(Pageable.class))).willReturn(auctionsPage);
 
 		FetchAuctionsRequestDto request = new FetchAuctionsRequestDto();
-		request.setAuctionStatus(AuctionStatus.RUNNING);
+		request.setStatus(AuctionStatus.RUNNING);
 		request.setLimit(10);
 		request.setStartFrom(0);
 
@@ -138,10 +138,10 @@ public class AuctionServiceTest {
 
 	private Auction getAuction() {
 		User user = new User("userId", "email", "firstName", "lastName");
-		List<UserBid> userBids = Arrays.asList(new UserBid("bidId1", user, 6000d, true),
-				new UserBid("bidId1", user, 8000d, true), new UserBid("bidId1", user, 5500d, true));
+		List<UserBid> userBids = Arrays.asList(new UserBid(user, 6000d, true), new UserBid(user, 8000d, true),
+				new UserBid(user, 5500d, true));
 		Item item = new Item("itemCode", "name", "description");
-		Auction auction = new Auction("auctionId", item, AuctionStatus.RUNNING, 5000d, 100d, userBids);
+		Auction auction = new Auction(item, AuctionStatus.RUNNING, 5000d, 100d, userBids);
 		return auction;
 	}
 
