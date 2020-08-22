@@ -1,0 +1,6 @@
+package com.bidding.system.dto;
+
+public enum ResponseTypeEnum {
+	SUCCESS, BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORISED, VALIDATION_ERROR, BID_NOT_ACCEPTED,
+	HEADER_MISSING;
+}
