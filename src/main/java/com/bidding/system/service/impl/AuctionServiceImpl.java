@@ -54,7 +54,7 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 
 	private Double getMaxBidding(List<UserBid> userBids) {
-		Double max = Double.MIN_VALUE;
+		Double max = 0d;
 		for (UserBid userBid : userBids) {
 			max = Double.max(userBid.getAmount(), max);
 		}

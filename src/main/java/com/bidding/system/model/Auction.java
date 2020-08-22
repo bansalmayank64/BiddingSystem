@@ -36,7 +36,7 @@ public class Auction implements Serializable {
 	private Double stepRate;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "bidId")
+	@JoinColumn(name = "auctionId")
 	private List<UserBid> userBids;
 
 	public Auction() {

@@ -22,6 +22,10 @@ public class AuctionRepositoryAddMultiplePredicateSpecification implements Speci
 		this.auctionStatus = auctionStatus;
 	}
 
+	public AuctionStatus getAuctionStatus() {
+		return auctionStatus;
+	}
+
 	@Override
 	public Predicate toPredicate(Root<Auction> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 		if (Objects.nonNull(auctionStatus)) {
