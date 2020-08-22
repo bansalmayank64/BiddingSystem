@@ -27,7 +27,6 @@ import com.bidding.system.model.UserBid;
 import com.bidding.system.repository.AuctionRepository;
 import com.bidding.system.repository.AuctionRepositoryAddMultiplePredicateSpecification;
 import com.bidding.system.repository.ItemRepository;
-import com.bidding.system.repository.UserBidRepository;
 import com.bidding.system.service.AuctionService;
 
 @Service
@@ -38,9 +37,6 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Autowired
 	private ItemRepository itemRepository;
-
-	@Autowired
-	private UserBidRepository userBidRepository;
 
 	@Override
 	public FetchAuctionsResponseDto fetchAllAuctions(FetchAuctionsRequestDto request) {
@@ -62,7 +58,8 @@ public class AuctionServiceImpl implements AuctionService {
 
 		List<AuctionModel> auctionModels = new ArrayList<>();
 		auctions.forEach(auction -> {
-			List<UserBid> userBids = userBidRepository.findAllByAuctionAndIsAccepted(auction, true);
+			List<UserBid> userBids = auction.getUserBids().stream().filter(u -> u.isAccepted())
+					.collect(Collectors.toList());
 			AuctionModel auctionModel = new AuctionModel(auction.getAuctionId(), auction.getItem().getItemCode(),
 					getMaxBidding(userBids, auction.getMinimumBasePrice()), auction.getStepRate());
 			auctionModels.add(auctionModel);
@@ -73,7 +70,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 	@Override
 	@Transactional
-	public void placeBid(String itemCode, AuctionBidRequestDto auctionBidRequestDto, Long version)
+	public void placeBid(String itemCode, AuctionBidRequestDto auctionBidRequestDto)
 			throws AuctionNotFoundException, BidNotAcceptedException {
 		Optional<Item> findItemById = itemRepository.findById(itemCode);
 		if (findItemById.isPresent()) {
@@ -81,7 +78,7 @@ public class AuctionServiceImpl implements AuctionService {
 			Optional<Auction> findAuctionByItem = auctionRepository.findByItemAndAuctionStatus(item,
 					AuctionStatus.RUNNING);
 			if (findAuctionByItem.isPresent()) {
-				validateAndPlaceBid(auctionBidRequestDto.getBidAmount(), findAuctionByItem.get(), version);
+				validateAndPlaceBid(auctionBidRequestDto.getBidAmount(), findAuctionByItem.get());
 			} else {
 				throw new AuctionNotFoundException("No auction is running with item code: " + itemCode);
 			}
@@ -90,7 +87,7 @@ public class AuctionServiceImpl implements AuctionService {
 		}
 	}
 
-	private void validateAndPlaceBid(Double bidAmount, Auction auction, Long version) throws BidNotAcceptedException {
+	private void validateAndPlaceBid(Double bidAmount, Auction auction) throws BidNotAcceptedException {
 		List<UserBid> userBids = auction.getUserBids().stream().filter(u -> u.isAccepted())
 				.collect(Collectors.toList());
 		if (Objects.isNull(userBids)) {
@@ -99,7 +96,6 @@ public class AuctionServiceImpl implements AuctionService {
 		Double maxBidding = getMaxBidding(userBids, auction.getMinimumBasePrice());
 		Double stepRate = auction.getStepRate();
 		Double minimumBasePrice = auction.getMinimumBasePrice();
-		auction.setVersion(version);
 		if (bidAmount > maxBidding && bidAmount > minimumBasePrice && (bidAmount - maxBidding) % stepRate == 0) {
 			userBids.add(new UserBid(null, bidAmount, true));
 			auction.setUserBids(userBids);

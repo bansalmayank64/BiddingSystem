@@ -10,6 +10,6 @@ public interface AuctionService {
 
 	FetchAuctionsResponseDto fetchAllAuctions(FetchAuctionsRequestDto request);
 
-	void placeBid(String itemCode, AuctionBidRequestDto auctionBidRequestDto, Long version)
+	void placeBid(String itemCode, AuctionBidRequestDto auctionBidRequestDto)
 			throws AuctionNotFoundException, BidNotAcceptedException;
 }

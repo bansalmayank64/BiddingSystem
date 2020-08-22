@@ -21,7 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.bidding.system.dto.AuctionModel;
+import com.bidding.system.dto.AuctionBidRequestDto;
 import com.bidding.system.dto.FetchAuctionsRequestDto;
 import com.bidding.system.dto.FetchAuctionsResponseDto;
 import com.bidding.system.model.Auction;
@@ -31,6 +31,7 @@ import com.bidding.system.model.User;
 import com.bidding.system.model.UserBid;
 import com.bidding.system.repository.AuctionRepository;
 import com.bidding.system.repository.AuctionRepositoryAddMultiplePredicateSpecification;
+import com.bidding.system.repository.ItemRepository;
 
 /*
  * Test class for AuctionService
@@ -47,6 +48,9 @@ public class AuctionServiceTest {
 
 	@Mock
 	private AuctionRepository auctionRepository;
+
+	@Mock
+	private ItemRepository itemRepository;
 
 	@InjectMocks
 	private AuctionServiceImpl auctionService;
@@ -65,8 +69,11 @@ public class AuctionServiceTest {
 		FetchAuctionsResponseDto fetchAllAuctions = auctionService.fetchAllAuctions(request);
 
 		// Then
-		FetchAuctionsResponseDto expectedFetchAllAuctions = getExpectedFetchAuctionsResponse();
-		assertEquals(expectedFetchAllAuctions, fetchAllAuctions);
+		assertEquals(1L, fetchAllAuctions.getResultsAvailable());
+		assertEquals(1, fetchAllAuctions.getResultsReturned());
+		assertEquals(8000d, fetchAllAuctions.getData().get(0).getHighestBidAmount());
+		assertEquals(100d, fetchAllAuctions.getData().get(0).getStepRate());
+		assertEquals("itemCode", fetchAllAuctions.getData().get(0).getItemCode());
 
 		then(auctionRepository).should().findAll(argSpecificationCaptor.capture());
 		assertEquals(AuctionStatus.RUNNING, argSpecificationCaptor.getValue().getAuctionStatus());
@@ -88,12 +95,11 @@ public class AuctionServiceTest {
 		FetchAuctionsResponseDto fetchAllAuctions = auctionService.fetchAllAuctions(request);
 
 		// Then
-		FetchAuctionsResponseDto expectedFetchAllAuctions = new FetchAuctionsResponseDto();
-		expectedFetchAllAuctions.setResultsAvailable(1L);
-		expectedFetchAllAuctions.setResultsReturned(1);
-		List<AuctionModel> data = Arrays.asList(new AuctionModel("auctionId", "itemCode", 0d, 100d));
-		expectedFetchAllAuctions.setData(data);
-		assertEquals(expectedFetchAllAuctions, fetchAllAuctions);
+		assertEquals(1L, fetchAllAuctions.getResultsAvailable());
+		assertEquals(1, fetchAllAuctions.getResultsReturned());
+		assertEquals(5000d, fetchAllAuctions.getData().get(0).getHighestBidAmount());
+		assertEquals(100d, fetchAllAuctions.getData().get(0).getStepRate());
+		assertEquals("itemCode", fetchAllAuctions.getData().get(0).getItemCode());
 
 		then(auctionRepository).should().findAll(argSpecificationCaptor.capture());
 		assertEquals(AuctionStatus.RUNNING, argSpecificationCaptor.getValue().getAuctionStatus());
@@ -117,8 +123,11 @@ public class AuctionServiceTest {
 		FetchAuctionsResponseDto fetchAllAuctions = auctionService.fetchAllAuctions(request);
 
 		// Then
-		FetchAuctionsResponseDto expectedFetchAllAuctions = getExpectedFetchAuctionsResponse();
-		assertEquals(expectedFetchAllAuctions, fetchAllAuctions);
+		assertEquals(1L, fetchAllAuctions.getResultsAvailable());
+		assertEquals(1, fetchAllAuctions.getResultsReturned());
+		assertEquals(8000d, fetchAllAuctions.getData().get(0).getHighestBidAmount());
+		assertEquals(100d, fetchAllAuctions.getData().get(0).getStepRate());
+		assertEquals("itemCode", fetchAllAuctions.getData().get(0).getItemCode());
 
 		then(auctionRepository).should().findAll(argSpecificationCaptor.capture(), argPageableCaptor.capture());
 		assertEquals(AuctionStatus.RUNNING, argSpecificationCaptor.getValue().getAuctionStatus());
@@ -127,22 +136,47 @@ public class AuctionServiceTest {
 		then(auctionRepository).shouldHaveNoMoreInteractions();
 	}
 
-	private FetchAuctionsResponseDto getExpectedFetchAuctionsResponse() {
-		FetchAuctionsResponseDto expectedFetchAllAuctions = new FetchAuctionsResponseDto();
-		expectedFetchAllAuctions.setResultsAvailable(1L);
-		expectedFetchAllAuctions.setResultsReturned(1);
-		List<AuctionModel> data = Arrays.asList(new AuctionModel("auctionId", "itemCode", 8000d, 100d));
-		expectedFetchAllAuctions.setData(data);
-		return expectedFetchAllAuctions;
+	@Test
+	public void shouldPlaceBid() {
+		// Given
+		Auction auction = getAuction();
+		String itemCode = "itemCode";
+		AuctionBidRequestDto auctionBidRequestDto = new AuctionBidRequestDto(5000d, "userId");
+		Long version = 1L;
+
+		// given(itemRepository.findById("")).willReturn(value);
+		given(auctionRepository.findAll(any(AuctionRepositoryAddMultiplePredicateSpecification.class)))
+				.willReturn(Arrays.asList(auction));
+
+		FetchAuctionsRequestDto request = new FetchAuctionsRequestDto();
+		request.setStatus(AuctionStatus.RUNNING);
+
+		// When
+		// auctionService.placeBid(itemCode, auctionBidRequestDto, version);
+
+		// Then
+//		assertEquals(1L, fetchAllAuctions.getResultsAvailable());
+//		assertEquals(1, fetchAllAuctions.getResultsReturned());
+//		assertEquals(8000d, fetchAllAuctions.getData().get(0).getHighestBidAmount());
+//		assertEquals(100d, fetchAllAuctions.getData().get(0).getStepRate());
+//		assertEquals("itemCode", fetchAllAuctions.getData().get(0).getItemCode());
+
+		then(auctionRepository).should().findAll(argSpecificationCaptor.capture());
+		assertEquals(AuctionStatus.RUNNING, argSpecificationCaptor.getValue().getAuctionStatus());
+		then(auctionRepository).shouldHaveNoMoreInteractions();
 	}
 
 	private Auction getAuction() {
 		User user = new User("userId", "email", "firstName", "lastName");
 		List<UserBid> userBids = Arrays.asList(new UserBid(user, 6000d, true), new UserBid(user, 8000d, true),
 				new UserBid(user, 5500d, true));
-		Item item = new Item("itemCode", "name", "description");
-		Auction auction = new Auction(item, AuctionStatus.RUNNING, 5000d, 100d, userBids);
+		Auction auction = new Auction(getItem(), AuctionStatus.RUNNING, 5000d, 100d, userBids);
 		return auction;
+	}
+
+	private Item getItem() {
+		Item item = new Item("itemCode", "name", "description");
+		return item;
 	}
 
 }
