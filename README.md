@@ -29,7 +29,7 @@ Use Basic Authentication in every api given below:
 Username: admin
 Password: admin
 
-<<This feature can be improved and we can use JWT token authentication instead of basic authentication.>>
+Note: This feature can be improved and we can use JWT token authentication instead of basic authentication.
 
 ### Fetch Auctions Api
 Test the `auction` endpoint.
